@@ -14,7 +14,6 @@
       --pink2: #fff0f6;
       --card: #ffffffdd;
       --yes: #ff3b7a;
-      --yesHover: #ff1f68;
     }
 
     * {
@@ -30,7 +29,6 @@
       background: radial-gradient(circle at top, var(--pink2), var(--pink1));
       font-family: system-ui, sans-serif;
       padding: 12px;
-      overflow: hidden;
     }
 
     canvas {
@@ -51,16 +49,9 @@
       box-shadow: 0 20px 50px rgba(0,0,0,.15);
     }
 
-    .art {
-      width: 200px;
-      margin: 0 auto 10px;
-      display: block;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.15));
-    }
-
     h1 {
       font-size: 22px;
-      margin: 10px 0 18px;
+      margin-bottom: 20px;
     }
 
     .zone {
@@ -71,7 +62,6 @@
 
     button {
       position: absolute;
-      left: 50%;
       padding: 18px 32px;
       font-size: 20px;
       font-weight: 800;
@@ -79,22 +69,19 @@
       border: none;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(0,0,0,.18);
-      transition: transform .12s ease, background .12s ease;
       user-select: none;
     }
 
     #yes {
+      left: 50%;
       top: 40px;
       transform: translateX(-50%);
       background: var(--yes);
       color: white;
     }
 
-    #yes:hover {
-      background: var(--yesHover);
-    }
-
     #no {
+      left: 50%;
       top: 130px;
       transform: translateX(-50%);
       background: #e5e7eb;
@@ -102,58 +89,25 @@
     }
 
     .hint {
+      margin-top: 8px;
       font-size: 12px;
       opacity: .7;
-      margin-top: 8px;
     }
 
     .result {
       display: none;
+      margin-top: 20px;
       animation: pop .4s ease;
     }
 
     .result h2 {
-      font-size: 32px;
-      margin: 14px 0;
-    }
-
-    .gif {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 14px;
+      font-size: 30px;
+      margin-bottom: 10px;
     }
 
     @keyframes pop {
       from { opacity: 0; transform: scale(.95); }
       to { opacity: 1; transform: scale(1); }
-    }
-
-    /* DESKTOP */
-    @media (min-width: 700px) {
-      .card {
-        max-width: 600px;
-      }
-
-      h1 {
-        font-size: 32px;
-      }
-
-      .art {
-        width: 260px;
-      }
-
-      .zone {
-        height: 180px;
-      }
-
-      #yes {
-        left: 35%;
-      }
-
-      #no {
-        left: 65%;
-        top: 40px;
-      }
     }
   </style>
 </head>
@@ -163,32 +117,6 @@
 <canvas id="confetti"></canvas>
 
 <div class="card">
-
-  <!-- PETIT ANIMAL -->
-  <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="fur" x1="0" x2="1">
-        <stop offset="0" stop-color="#f7c7a1"/>
-        <stop offset="1" stop-color="#f2a97b"/>
-      </linearGradient>
-    </defs>
-
-    <path d="M90 120 C90 70 140 40 190 60
-             C240 40 290 70 290 120
-             C290 180 240 210 190 210
-             C140 210 90 180 90 120Z"
-          fill="url(#fur)"/>
-
-    <circle cx="160" cy="130" r="8"/>
-    <circle cx="220" cy="130" r="8"/>
-
-    <path d="M190 144 C186 144 182 148 182 152
-             C182 160 190 164 190 170
-             C190 164 198 160 198 152
-             C198 148 194 144 190 144Z"
-          fill="#ff7aa2"/>
-  </svg>
-
   <h1>LILLY, VEUX-TU ÊTRE MA VALENTINE ? 💕</h1>
 
   <div class="zone" id="zone">
@@ -196,13 +124,15 @@
     <button id="no">Non 😢</button>
   </div>
 
-  <div class="hint" id="hint">Pourquoi tu veux pas de moi ? 🥺</div>
+  <div class="hint">Essaie encore… 😏</div>
 
   <div class="result" id="result">
     <h2>YAAAAY 🎉💘</h2>
-    <img class="gif" src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" />
+    <img
+      src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
+      style="width:100%;max-width:280px;border-radius:14px"
+    />
   </div>
-
 </div>
 
 <script>
@@ -210,78 +140,49 @@
   const no = document.getElementById("no");
   const zone = document.getElementById("zone");
   const result = document.getElementById("result");
-  const hint = document.getElementById("hint");
   const canvas = document.getElementById("confetti");
 
-  let scale = 1;
-
+  /* CONFETTI */
   function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
     canvas.width = innerWidth * dpr;
     canvas.height = innerHeight * dpr;
   }
-
   resizeCanvas();
   addEventListener("resize", resizeCanvas);
 
   const confettiInstance = confetti.create(canvas, { resize: false });
 
   function boom() {
-    const end = Date.now() + 1500;
-    (function frame() {
-      confettiInstance({
-        particleCount: 12,
-        spread: 90,
-        startVelocity: 45,
-        origin: { x: Math.random(), y: Math.random() * 0.4 }
-      });
-      if (Date.now() < end) requestAnimationFrame(frame);
-    })();
+    confettiInstance({
+      particleCount: 250,
+      spread: 120,
+      origin: { x: 0.5, y: 0.5 }
+    });
   }
 
-  function moveNo(x, y) {
+  /* NON BOUGE À CHAQUE CLIC */
+  no.addEventListener("click", () => {
     const z = zone.getBoundingClientRect();
     const b = no.getBoundingClientRect();
 
-    let dx = (b.left + b.width / 2) - x;
-    let dy = (b.top + b.height / 2) - y;
-    let mag = Math.hypot(dx, dy) || 1;
+    const maxX = z.width - b.width;
+    const maxY = z.height - b.height;
 
-    dx /= mag;
-    dy /= mag;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
 
-    let left = (b.left - z.left) + dx * 140;
-    let top = (b.top - z.top) + dy * 140;
-
-    left = Math.max(0, Math.min(left, z.width - b.width));
-    top = Math.max(0, Math.min(top, z.height - b.height));
-
-    no.style.left = left + "px";
-    no.style.top = top + "px";
+    no.style.left = x + "px";
+    no.style.top = y + "px";
     no.style.transform = "none";
-
-    scale = Math.min(2.2, scale + 0.1);
-    yes.style.transform = `translateX(-50%) scale(${scale})`;
-  }
-
-  zone.addEventListener("pointermove", e => {
-    const b = no.getBoundingClientRect();
-    const d = Math.hypot(
-      (b.left + b.width / 2) - e.clientX,
-      (b.top + b.height / 2) - e.clientY
-    );
-    if (d < 160) moveNo(e.clientX, e.clientY);
   });
 
+  /* OUI */
   yes.addEventListener("click", () => {
     zone.style.display = "none";
-    hint.style.display = "none";
     result.style.display = "block";
-    resizeCanvas();
     boom();
   });
-
-  no.addEventListener("click", e => e.preventDefault());
 </script>
 
 </body>
